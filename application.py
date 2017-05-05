@@ -1,11 +1,11 @@
-from flask import Flask, render_template, url_for, Session, request, flash, redirect
+from flask import Flask, render_template, url_for, session, request, flash, redirect
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 import datetime
 
-from helpers import *
+# from helpers import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -15,10 +15,9 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = 'super secret'
 
-session = Session()
-session.init_app(app)
-
 db = SQLAlchemy(app)
+Session(app)
+
 
 # Models
 class User(db.Model):
@@ -71,8 +70,8 @@ def register():
             return redirect(url_for("register"))
 
         # add user to database
-        hash = pwd_context.hash(request.form.get("password"))
-        user = User(username, hash)
+        password = request.form.get("password")
+        user = User(username, password)
         db.session.add(user)
         db.session.commit()
 
@@ -81,6 +80,61 @@ def register():
 
     return render_template("register.html")
 
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+
+    # clear current user id
+    if "user_id" in session:
+        session.clear()
+
+    if request.method == "POST":
+        # ensure username was submitted
+        if not request.form.get("username"):
+            flash("Username field cannot be blank", "error")
+            return redirect(url_for("login"))
+
+        # ensure password was submitted
+        elif not request.form.get("password"):
+            flash("Password field cannot be blank", "error")
+            return redirect(url_for("login"))
+
+        # query database for username
+        username = request.form.get("username").lower()
+        password = request.form.get("password")
+
+        user = User.query.filter_by(username=username).first()
+
+        # ensure username exists and password is correct
+        if not user or not pwd_context.verify(password, user.hash):
+            print(pwd_context.encrypt(password))
+            print(user.hash)
+            flash("Invalid username and/or password provided", "error")
+            return redirect(url_for("login"))
+
+        # remember which user has logged in
+        session["user_id"] = user.id
+        session["username"] = user.username
+
+        # adjust user.last_seen
+        user.last_seen = datetime.datetime.utcnow()
+        db.session.add(user)
+        db.session.commit()
+
+        # redirect user to home page
+        flash("Welcome back {}".format(user.username))
+        return redirect(url_for("index"))
+
+    return render_template("login.html")
+
+
+@app.route('/logout')
+def logout():
+    # clear user in session
+    session.clear()
+
+    flash("You have been logged out successfully.", "success")
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run()
