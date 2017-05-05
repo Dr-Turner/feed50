@@ -47,8 +47,8 @@ Temporary Items
 .apdisk
 
 
-
+# Project-specific ignores
 .idea
-test.db
 __pycache__
+
 test.db
