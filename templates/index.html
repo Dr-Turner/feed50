@@ -6,9 +6,14 @@
 
 {% block main %}
     <div class="container">
-        <div class="jumbotron">
-            <p class="pre-header">This is</p>
-            <h1>feed50</h1>
-        </div>
-    </div>
+        <p class="pre-header">This is</p>
+        <h1 class="project-title">
+          <span class="feed50blue">feed</span><!--
+       --><span class="feed50red">50</span>
+        </h1>
+      <hr>
+        <p class="project-desc">Welcome to feed50 - A lightweight rss-feeder web app.</p>
+        <p class="project-desc">Orginally created for the final project of the <a href="https://www.edx.org/course/introduction-computer-science-harvardx-cs50x">cs50x</a> course, this app utilises technologys such as Python, Flask, SqlAlchemy and the Passlib Python library to securely hash and store passwords.</p>
+        <p class="project-desc">Interested? Check out the open-source <a href="https://www.github.com/Dr-Turner/feed50">github repository</a></p>
+    </div> <!-- end .container -->
 {% endblock %}

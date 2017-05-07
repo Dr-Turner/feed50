@@ -1,3 +1,58 @@
+body {
+    background: url(noisy-texture-100x100-o27-d47-c-ffffff-t0.png);
+}
+
+.container
+{
+    /* center contents */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.navbar-brand {
+    font-family: 'Lobster', cursive;
+}
+
 .pre-header {
-    color: #ccc;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    padding-bottom: -5px;
+    margin-bottom: -10px;
+    color: #ccc !important;
+}
+
+.project-title {
+    font-family: 'Lobster', cursive;
+    font-size: 4em;
+}
+
+.feed50blue {
+    color: #272172;
+}
+
+.feed50red {
+    color: #6a1d1d;
+    display: inline-block;
+}
+
+.project-desc {
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    font-size: 1.2em;
+    font-weight: 400;
+}
+
+.form-group {
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alert {
+    font-weight: bold;
+}
+
+@media (max-width: 720px) {
+    .form-group {
+max-width:  80%;
+    }
 }

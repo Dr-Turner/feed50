@@ -1,11 +1,11 @@
-from flask import Flask, render_template, url_for, session, request, flash, redirect
+from flask import Flask, render_template
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 import datetime
 
-# from helpers import *
+from helpers import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -13,7 +13,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False    # to disable annoying wa
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.secret_key = 'super secret'
 
 db = SQLAlchemy(app)
 Session(app)
@@ -85,7 +84,7 @@ def register():
 def login():
 
     # clear current user id
-    if "user_id" in session:
+    if session.get("user_id"):
         session.clear()
 
     if request.method == "POST":
@@ -123,7 +122,7 @@ def login():
 
         # redirect user to home page
         flash("Welcome back {}".format(user.username))
-        return redirect(url_for("index"))
+        return redirect(url_for("feeds"))
 
     return render_template("login.html")
 
@@ -135,6 +134,14 @@ def logout():
 
     flash("You have been logged out successfully.", "success")
     return redirect(url_for('index'))
+
+
+@app.route('/feeds')
+@login_required
+def feeds():
+    return render_template('feeds.html')
+
+
 
 if __name__ == '__main__':
     app.run()

@@ -6,7 +6,12 @@ Notes:
 * Password are hashed.
 
 ---  
-Created for my final [cs50x](https://www.google.co.uk/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwiH1vHN0NjTAhXkJ8AKHZgWC6gQFggtMAA&url=https%3A%2F%2Fwww.edx.org%2Fcourse%2Fintroduction-computer-science-harvardx-cs50x&usg=AFQjCNEw8VS5m86U3R5WFUMDW7CpqJzK1g) project.
+Created for my final [cs50x](https://www.edx.org/course/introduction-computer-science-harvardx-cs50x) project.
 
+
+attributions
+* Feed50 font is [Lobster](https://fonts.google.com/specimen/Lobster) from [Google Fonts](https://fonts.google.com/)
+* Background generated at [Noise Texture Generator](http://www.noisetexturegenerator.com/)
+* License made easy thanks to [choosealicense.com](https://choosealicense.com)
 
 This project has an MIT license.
