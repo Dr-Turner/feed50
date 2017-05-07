@@ -29,10 +29,6 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-              <li><a href="{{ url_for('index') }}">Index</a></li>
-          </ul>
-
           {% if session.get("user_id") %} <!-- Logged in nav items-->
 
           <ul class="nav navbar-nav navbar-left">
@@ -42,16 +38,12 @@
 
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#">{{ session.username }}</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           </ul>
 
           {% else %}                     <!-- Logged out nav items -->
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ url_for('login') }}">Login</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ url_for('register') }}">Register</a></li>
           </ul>
           {% endif %}
