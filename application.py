@@ -35,9 +35,27 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+
+class Feed(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    feed_name = db.Column(db.String(80))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    feed_url = db.Column(db.String(200))
+
+    def __init__(self, feed_name, feed_url, user_id):
+        self.feed_name = feed_name
+        self.feed_url = feed_url
+        self.user_id = user_id
+
+    def __repr__(self):
+        return '<Feed %r>' % self.feed_name
+
+
+# Routes/Views
 @app.route('/')
 @app.route('/index')
 def index():
+    """A very simple welcome page"""
     return render_template("index.html")
 
 
@@ -106,8 +124,6 @@ def login():
 
         # ensure username exists and password is correct
         if not user or not pwd_context.verify(password, user.hash):
-            print(pwd_context.encrypt(password))
-            print(user.hash)
             flash("Invalid username and/or password provided", "error")
             return redirect(url_for("login"))
 
@@ -139,9 +155,45 @@ def logout():
 @app.route('/feeds')
 @login_required
 def feeds():
-    return render_template('feeds.html')
+    """page to display feed currently subsribed to"""
+    feeds = Feed.query.filter_by(user_id=session['user_id'])
+    return render_template('feeds.html', feeds=feeds)
 
 
+@app.route('/add_feed', methods=["GET", "POST"])
+@login_required
+def add_feed():
+    """Page to enable a user to add a field to his/her profile"""
+    if request.method == "POST":
+
+        # check url field is populated
+        if not request.form.get("feed_url"):
+            flash("Field cannot be left blank", "error")
+            return redirect(url_for("add_feed"))
+
+        # check url field is not more than 200 chars
+        if len(request.form.get("feed_url")) > 200:
+            flash("Sorry, we cannot add urls longer than 200 characters in length", "error")
+            return redirect(url_for("add_feed"))
+
+        # check url field is actually a legit rss.
+        if not is_rss_page(request.form.get("feed_url")):
+            flash("Sorry, this doesn't seem to be a rss page!", "error")
+            return redirect(url_for("add_feed"))
+
+        # get feeds title
+        url = request.form.get("feed_url")
+        feed_name = get_rss_title(url)
+
+        # add rss to users account
+        f = Feed(feed_name, url, session["user_id"])
+        db.session.add(f)
+        db.session.commit()
+
+        flash("Rss feed added successfully", "success")
+        return redirect(url_for("feeds"))
+
+    return render_template("add_feed.html")
 
 if __name__ == '__main__':
     app.run()

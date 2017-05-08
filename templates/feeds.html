@@ -5,7 +5,16 @@
 {% endblock %}
 
 {% block main %}
-  <div class="placeholder">
-    <p>Hi, I'm a place holder for /feeds</p>
+  <div class="table responsive">
+    <table class="table">
+      <tbody>
+        {% for feed in feeds %}
+        <tr>
+          <td>{{ feed.feed_name }}</td>
+          <td class="table-url">{{ feed.feed_url }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock %}

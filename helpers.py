@@ -1,9 +1,6 @@
-# import logging
-# setup logging
-# logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
-
 from functools import wraps
 from flask import session, redirect, url_for, request, flash
+import feedparser
 
 def login_required(f):
     """
@@ -20,4 +17,15 @@ def login_required(f):
     return decorated_function
 
 
+def is_rss_page(url):
+    """determines if a url is a valid feed or not"""
+    d = feedparser.parse(url)
 
+    return 'title' in d.feed
+
+
+def get_rss_title(url):
+    """returns title of rss"""
+    d = feedparser.parse(url)
+
+    return d.feed.title

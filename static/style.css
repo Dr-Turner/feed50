@@ -51,6 +51,11 @@ body {
     font-weight: bold;
 }
 
+
+.table-url {
+    color: #BBE;
+}
+
 @media (max-width: 720px) {
     .form-group {
 max-width:  80%;
