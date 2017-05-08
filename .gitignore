@@ -51,4 +51,5 @@ Temporary Items
 .idea
 __pycache__
 
+sandbox.py
 test.db

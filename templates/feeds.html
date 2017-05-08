@@ -10,11 +10,15 @@
       <tbody>
         {% for feed in feeds %}
         <tr>
-          <td>{{ feed.feed_name }}</td>
+          <td>{{ feed.feed_name }}</td> <!-- TODO: Make this a link to a /view/post_id route -->
           <td class="table-url">{{ feed.feed_url }}</td>
+          <td><a href="{{ url_for('rename', post_id=feed.id) }}">Rename</a></td>
+          <td><a href="{{ url_for('remove', post_id=feed.id) }}" style="color: red">Remove</a></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    <a href="{{ url_for("add_feed") }}">Add Feed</a>
   </div>
 {% endblock %}

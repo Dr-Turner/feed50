@@ -156,7 +156,7 @@ def logout():
 @login_required
 def feeds():
     """page to display feed currently subsribed to"""
-    feeds = Feed.query.filter_by(user_id=session['user_id'])
+    feeds = Feed.query.filter_by(user_id=session["user_id"])
     return render_template('feeds.html', feeds=feeds)
 
 
@@ -185,7 +185,12 @@ def add_feed():
         url = request.form.get("feed_url")
         feed_name = get_rss_title(url)
 
-        # add rss to users account
+        # see if feed already exists.
+        f = Feed.query.filter_by(feed_url=url, user_id=session['user_id']).count()
+        if f > 0:
+            flash("Youa re already subscribed to this feed.", "error")
+            return  redirect(url_for("add_feed"))
+
         f = Feed(feed_name, url, session["user_id"])
         db.session.add(f)
         db.session.commit()
@@ -194,6 +199,24 @@ def add_feed():
         return redirect(url_for("feeds"))
 
     return render_template("add_feed.html")
+
+
+@app.route('/rename/<int:post_id>', methods=["GET", "POST"])
+@login_required
+def rename(post_id):
+    # TODO: implament
+    pass
+
+
+@app.route('/remove/<int:post_id>')
+@login_required
+def remove(post_id):
+    """remove post from database and hence users feed list"""
+    Feed.query.filter_by(id=post_id).delete()
+    db.session.commit()
+
+    flash("Feed removed", "success")
+    return redirect(url_for("feeds"))
 
 if __name__ == '__main__':
     app.run()

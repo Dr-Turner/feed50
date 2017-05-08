@@ -54,6 +54,7 @@ body {
 
 .table-url {
     color: #BBE;
+    /*font-size: 75%;*/
 }
 
 @media (max-width: 720px) {
