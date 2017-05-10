@@ -267,5 +267,76 @@ def remove(feed_id):
     flash("Feed removed", "success")
     return redirect(url_for("feeds"))
 
+
+@app.route('/profile/<int:user_id>')
+@login_required
+def profile(user_id):
+    """User page route. Allowing the user a dashboard of sorts."""
+
+    # check user is user. (No implementation at this time for viewing anohter users profile)
+    if not user_id == session["user_id"]:
+        flash("Sorry, you can't view another user's profile", "error")
+        return redirect(url_for("index"))
+
+    u = User.query.filter_by(id=user_id).first()
+    username = u.username
+    join_date= u.created_at.strftime("%d %B %Y")
+
+    return render_template("profile.html", username=username, join_date=join_date)
+
+
+@app.route('/change_pass', methods=["GET", "POST"])
+@login_required
+def change_pass():
+    """enables users to change passwords"""
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        # check all forms filled in
+        if not request.form.get("old_password") or not request.form.get("password"):
+            flash("all fields must be filled out", "error")
+            return redirect(url_for("change_pass"))
+
+        # check new password fields match.
+        if not request.form.get("password") == request.form.get("password-repeat"):
+            flash("New Passwords don't match!", "error")
+            return redirect(url_for("change_pass"))
+
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("password")
+
+        user = User.query.filter_by(id=user_id).first()
+
+        # check old password is valid
+        if not pwd_context.verify(old_password, user.hash):
+            flash("Current password incorrect", "error")
+            return redirect(url_for("change_pass"))
+
+        # change password
+        user.hash = pwd_context.hash(new_password)
+        db.session.commit()
+
+        flash("Password sucessfully changed!", "success")
+        return redirect(url_for("profile", user_id=user_id))
+
+    return render_template('change_pass.html')
+
+@app.route('/delete', methods=["GET", "POST"])
+@login_required
+def delete():
+    """deletes user and all feeds"""
+
+    User.query.filter_by(id=session["user_id"]).delete()
+    Feed.query.filter_by(user_id=session["user_id"]).delete()
+    db.session.commit()
+
+    session.clear()
+    flash("User and feeds have been completely removed from our systems. Goodbye!", "success")
+    return redirect(url_for("index"))
+
+
+
 if __name__ == '__main__':
     app.run()

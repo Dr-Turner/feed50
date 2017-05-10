@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ username }} - feed50
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+      <h2>{{ username }}</h2>
+      <p>Member since {{ join_date }}</p>
+
+      <a href="{{ url_for('change_pass') }}" class="btn btn-lg btn-default">
+        Change Password
+      </a>
+
+      <form action="{{ url_for('delete') }}" method="post">
+        <button class="btn btn-lg btn-danger">Delete Account</button>
+      </form>
+    </div> <!-- end .container -->
+{% endblock %}

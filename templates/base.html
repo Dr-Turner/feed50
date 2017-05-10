@@ -38,7 +38,7 @@
 
 
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">{{ session.username }}</a></li>
+            <li><a href="{{ url_for('profile', user_id=session['user_id'])}}">{{ session.username }}</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           </ul>
 
