@@ -156,8 +156,8 @@ def logout():
 @login_required
 def feeds():
     """page to display feed currently subsribed to"""
-    feeds = Feed.query.filter_by(user_id=session["user_id"])
-    return render_template('feeds.html', feeds=feeds)
+    user_feeds = Feed.query.filter_by(user_id=session["user_id"])
+    return render_template('feeds.html', feeds=user_feeds)
 
 
 @app.route('/add', methods=["GET", "POST"])
@@ -189,7 +189,7 @@ def add():
         f = Feed.query.filter_by(feed_url=url, user_id=session['user_id']).count()
         if f > 0:
             flash("You are already subscribed to this feed.", "error")
-            return  redirect(url_for("add"))
+            return redirect(url_for("add"))
 
         f = Feed(feed_name, url, session["user_id"])
         db.session.add(f)
@@ -254,7 +254,6 @@ def remove(feed_id):
         flash("Sorry, this feed does not exist", "error")
         return redirect(url_for("feeds"))
 
-
     # Check user is the correct one.
     if not f.user_id == session["user_id"]:
         flash("Sorry, you are not autorised to delete this feed.", "error")
@@ -280,7 +279,7 @@ def profile(user_id):
 
     u = User.query.filter_by(id=user_id).first()
     username = u.username
-    join_date= u.created_at.strftime("%d %B %Y")
+    join_date = u.created_at.strftime("%d %B %Y")
 
     return render_template("profile.html", username=username, join_date=join_date)
 
@@ -323,6 +322,7 @@ def change_pass():
 
     return render_template('change_pass.html')
 
+
 @app.route('/delete', methods=["GET", "POST"])
 @login_required
 def delete():
@@ -335,8 +335,6 @@ def delete():
     session.clear()
     flash("User and feeds have been completely removed from our systems. Goodbye!", "success")
     return redirect(url_for("index"))
-
-
 
 if __name__ == '__main__':
     app.run()
