@@ -221,7 +221,7 @@ def rename(feed_id=None):
         f.feed_name = request.form.get("new_name")
         db.session.commit()
 
-        flash("Feed renamed!", "error")
+        flash("Feed renamed!", "success")
         return redirect(url_for("feeds"))
 
     f = Feed.query.filter_by(id=feed_id).first()
