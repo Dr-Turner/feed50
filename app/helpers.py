@@ -2,6 +2,7 @@ from functools import wraps
 from flask import session, redirect, url_for, request, flash
 import feedparser
 
+
 def login_required(f):
     """
     Decorate routes to require login.

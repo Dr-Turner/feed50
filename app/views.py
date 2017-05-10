@@ -1,58 +1,13 @@
-from flask import session, redirect, url_for, request, flash
-from flask import Flask, render_template
-from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
-from passlib.apps import custom_app_context as pwd_context
-from tempfile import mkdtemp
+from flask import session, redirect, url_for, request, flash, render_template
 import datetime
 
-from helpers import login_required, is_rss_page, get_rss_title
+from passlib.apps import custom_app_context as pwd_context
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False    # to disable annoying warnings
-app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-
-db = SQLAlchemy(app)
-Session(app)
+from app import db, app
+from app.models import User, Feed
+from app.helpers import login_required, get_rss_title, is_rss_page
 
 
-# Models
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    hash = db.Column(db.String(120))
-    created_at = db.Column(db.DateTime())
-    last_seen = db.Column(db.DateTime())
-
-    def __init__(self, username, password):
-        self.username = username.lower()
-        self.hash = pwd_context.hash(password)
-        self.created_at = datetime.datetime.utcnow()
-        self.last_seen = datetime.datetime.utcnow()
-
-    def __repr__(self):
-        return '<User %r>' % self.username
-
-
-class Feed(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    feed_name = db.Column(db.String(80))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    feed_url = db.Column(db.String(200))
-
-    def __init__(self, feed_name, feed_url, user_id):
-        self.feed_name = feed_name
-        self.feed_url = feed_url
-        self.user_id = user_id
-
-    def __repr__(self):
-        return '<Feed %r>' % self.feed_name
-
-
-# Routes/Views
 @app.route('/')
 @app.route('/index')
 def index():
@@ -336,6 +291,3 @@ def delete():
     session.clear()
     flash("User and feeds have been completely removed from our systems. Goodbye!", "success")
     return redirect(url_for("index"))
-
-if __name__ == '__main__':
-    app.run()
