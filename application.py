@@ -160,26 +160,26 @@ def feeds():
     return render_template('feeds.html', feeds=feeds)
 
 
-@app.route('/add_feed', methods=["GET", "POST"])
+@app.route('/add', methods=["GET", "POST"])
 @login_required
-def add_feed():
+def add():
     """Page to enable a user to add a field to his/her profile"""
     if request.method == "POST":
 
         # check url field is populated
         if not request.form.get("feed_url"):
             flash("Field cannot be left blank", "error")
-            return redirect(url_for("add_feed"))
+            return redirect(url_for("add"))
 
         # check url field is not more than 200 chars
         if len(request.form.get("feed_url")) > 200:
             flash("Sorry, we cannot add urls longer than 200 characters in length", "error")
-            return redirect(url_for("add_feed"))
+            return redirect(url_for("add"))
 
         # check url field is actually a legit rss.
         if not is_rss_page(request.form.get("feed_url")):
             flash("Sorry, this doesn't seem to be a rss page!", "error")
-            return redirect(url_for("add_feed"))
+            return redirect(url_for("add"))
 
         # get feeds title
         url = request.form.get("feed_url")
@@ -188,8 +188,8 @@ def add_feed():
         # see if feed already exists.
         f = Feed.query.filter_by(feed_url=url, user_id=session['user_id']).count()
         if f > 0:
-            flash("Youa re already subscribed to this feed.", "error")
-            return  redirect(url_for("add_feed"))
+            flash("You are already subscribed to this feed.", "error")
+            return  redirect(url_for("add"))
 
         f = Feed(feed_name, url, session["user_id"])
         db.session.add(f)
@@ -198,21 +198,70 @@ def add_feed():
         flash("Rss feed added successfully", "success")
         return redirect(url_for("feeds"))
 
-    return render_template("add_feed.html")
+    return render_template("add.html")
 
 
-@app.route('/rename/<int:post_id>', methods=["GET", "POST"])
+@app.route('/rename/', methods=["GET", "POST"])
+@app.route('/rename/<int:feed_id>', methods=["GET", "POST"])
+def rename(feed_id=None):
+    """allows users to rename the titles of their own feeds."""
+    if request.method == "POST":
+        # check feed is populated
+        if not request.form.get("new_name"):
+            flash("Field cannot be blank.", "error")
+            return redirect(url_for("rename"))
+
+        # check field is not in excess of 80 chars.
+        if len(request.form.get("new_name")) > 80:
+            flash("Sorry! feed names cannot be in excess of 80 characters", "error")
+            return redirect(url_for("rename"))
+
+        f = Feed.query.filter_by(id=session["feed_id"]).first()
+        f.feed_name = request.form.get("new_name")
+        db.session.commit()
+
+        flash("Feed renamed!", "error")
+        return redirect(url_for("feeds"))
+
+    f = Feed.query.filter_by(id=feed_id).first()
+
+    # check feed exists.
+    if f is None:
+        flash("Sorry, this feed does not exist", "error")
+        return redirect(url_for("feeds"))
+
+    # Check user is the correct one.
+    if not f.user_id == session["user_id"]:
+        flash("Sorry, you are not autorised to rename this feed.", "error")
+        return redirect(url_for("feeds"))
+
+    # store feed_id in session so it won't be lost between the get and post requests
+    session["feed_id"] = feed_id
+
+    old_name = f.feed_name
+    return render_template("rename.html", old_name=old_name)  # could send old name to this
+
+
+@app.route('/remove/<int:feed_id>')
 @login_required
-def rename(post_id):
-    # TODO: implament
-    pass
+def remove(feed_id):
+    """allows users to delete their own feeds."""
+    query = Feed.query.filter_by(id=feed_id)
+
+    f = query.first()
+    # check feed exists.
+    if f is None:
+        flash("Sorry, this feed does not exist", "error")
+        return redirect(url_for("feeds"))
 
 
-@app.route('/remove/<int:post_id>')
-@login_required
-def remove(post_id):
+    # Check user is the correct one.
+    if not f.user_id == session["user_id"]:
+        flash("Sorry, you are not autorised to delete this feed.", "error")
+        return redirect(url_for("feeds"))
+
     """remove post from database and hence users feed list"""
-    Feed.query.filter_by(id=post_id).delete()
+    query.delete()
     db.session.commit()
 
     flash("Feed removed", "success")

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <form action="{{ url_for('add_feed') }}" method="post">
+    <form action="{{ url_for('add') }}" method="post">
         <fieldset>
             <div class="form-group">
                 <input type="text" autofocus class="form-control" name="feed_url" placeholder="URL of Feed" />
