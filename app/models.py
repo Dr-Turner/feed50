@@ -12,7 +12,7 @@ class User(db.Model):
     last_seen = db.Column(db.DateTime())
 
     def __init__(self, username, password):
-        self.username = username.lower()
+        self.username = username
         self.hash = pwd_context.hash(password)
         self.created_at = datetime.datetime.utcnow()
         self.last_seen = datetime.datetime.utcnow()
@@ -26,6 +26,7 @@ class Feed(db.Model):
     feed_name = db.Column(db.String(80))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     feed_url = db.Column(db.String(200))
+    last_loaded = db.Column(db.DateTime())
 
     def __init__(self, feed_name, feed_url, user_id):
         self.feed_name = feed_name

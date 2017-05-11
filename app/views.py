@@ -25,8 +25,8 @@ def register():
             return redirect(url_for("register"))
 
         # check username is available
-        username = request.form.get("username").lower()
-        exists = User.query.filter_by(username=username).count()
+        username = request.form.get("username")
+        exists = User.query.filter(User.username.ilike(username)).count()    # need do use ilike to keep user model insensative
 
         if exists:
             flash("Username already exists, please pick a different one", "error")
@@ -76,7 +76,7 @@ def login():
         username = request.form.get("username").lower()
         password = request.form.get("password")
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter(User.username.ilike(username)).first()
 
         # ensure username exists and password is correct
         if not user or not pwd_context.verify(password, user.hash):
