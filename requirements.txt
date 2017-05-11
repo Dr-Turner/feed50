@@ -3,3 +3,4 @@ Flask==0.12.1
 Flask_SQLAlchemy==2.2
 passlib==1.7.1
 feedparser==5.2.1
+gunicorn==19.6.0
