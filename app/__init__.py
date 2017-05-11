@@ -13,6 +13,7 @@ Session(app)
 
 # set up date base if it doesn't exist
 if not os.path.exists(db_path):
+    from app.models import User, Feed
     db.create_all()
 
 
