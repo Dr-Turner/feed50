@@ -283,11 +283,22 @@ def change_pass():
 @login_required
 def delete():
     """deletes user and all feeds"""
+    if request.method == "POST":
 
-    User.query.filter_by(id=session["user_id"]).delete()
-    Feed.query.filter_by(user_id=session["user_id"]).delete()
-    db.session.commit()
+        # check password entered matched users
+        user = User.query.filter_by(id=session["user_id"]).first()
+        password = request.form.get("password")
 
-    session.clear()
-    flash("User and feeds have been completely removed from our systems. Goodbye!", "success")
-    return redirect(url_for("index"))
+        if not pwd_context.verify(password, user.hash):
+            flash("Current password incorrect", "error")
+            return redirect(url_for("profile", user_id=session["user_id"]))
+
+        User.query.filter_by(id=session["user_id"]).delete()
+        Feed.query.filter_by(user_id=session["user_id"]).delete()
+        db.session.commit()
+
+        session.clear()
+        flash("User and feeds have been completely removed from our systems. Goodbye!", "success")
+        return redirect(url_for("index"))
+
+    return render_template("delete.html")

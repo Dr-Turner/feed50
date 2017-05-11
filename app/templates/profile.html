@@ -9,12 +9,17 @@
       <h2>{{ username }}</h2>
       <p>Member since {{ join_date }}</p>
 
-      <a href="{{ url_for('change_pass') }}" class="btn btn-lg btn-default">
-        Change Password
-      </a>
+      <div class="button-group">
+        <a href="{{ url_for('change_pass') }}" class="btn btn-lg btn-primary">
+          Change Password
+        </a>
 
-      <form action="{{ url_for('delete') }}" method="post">
-        <button class="btn btn-lg btn-danger">Delete Account</button>
-      </form>
+        <a href="{{ url_for('delete') }}" class="btn btn-lg btn-danger">
+          Delete Account
+        </a>
+      </div>
+{#      <form action="{{ url_for('delete') }}" method="get">#}
+{#        <button class="btn btn-lg btn-danger">Delete Account</button>#}
+{#      </form>#}
     </div> <!-- end .container -->
 {% endblock %}

@@ -17,6 +17,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# https://stackoverflow.com/questions/32911578/flask-confirm-action
+
 
 def is_rss_page(url):
     """determines if a url is a valid feed or not"""
