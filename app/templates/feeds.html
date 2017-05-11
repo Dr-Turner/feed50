@@ -11,7 +11,7 @@
       <tbody>
         {% for feed in feeds %}
         <tr>
-          <td>{{ feed.feed_name }}</td> <!-- TODO: Make this a link to a /view/post_id route -->
+          <td><a href="{{ url_for('view', feed_id=feed.id) }}">{{ feed.feed_name }}</a></td>
           <td class="table-url visible-lg">{{ feed.feed_url }}</td>
           <td><a href="{{ url_for('rename', feed_id=feed.id) }}">Rename</a></td>
           <td><a href="{{ url_for('remove', feed_id=feed.id) }}" style="color: red">Remove</a></td>

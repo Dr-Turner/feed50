@@ -32,6 +32,7 @@ class Feed(db.Model):
         self.feed_name = feed_name
         self.feed_url = feed_url
         self.user_id = user_id
+        self.last_loaded = datetime.datetime(1900, 1, 1)
 
     def __repr__(self):
         return '<Feed %r>' % self.feed_name

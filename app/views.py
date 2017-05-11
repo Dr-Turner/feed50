@@ -1,11 +1,11 @@
-from flask import session, redirect, url_for, request, flash, render_template
 import datetime
+from flask import session, redirect, url_for, request, flash, render_template
 
 from passlib.apps import custom_app_context as pwd_context
 
 from app import db, app
 from app.models import User, Feed
-from app.helpers import login_required, get_rss_title, is_rss_page
+from app.helpers import login_required, get_rss_title, is_rss_page, get_feed
 
 
 @app.route('/')
@@ -26,7 +26,8 @@ def register():
 
         # check username is available
         username = request.form.get("username")
-        exists = User.query.filter(User.username.ilike(username)).count()    # need do use ilike to keep user model insensative
+        # (need do use ilike to keep user model case insensitive)
+        exists = User.query.filter(User.username.ilike(username)).count()
 
         if exists:
             flash("Username already exists, please pick a different one", "error")
@@ -302,3 +303,34 @@ def delete():
         return redirect(url_for("index"))
 
     return render_template("delete.html")
+
+
+@app.route('/view/<int:feed_id>')
+@login_required
+def view(feed_id):
+    """ page to view a rss feed """
+    # get feed info.
+    f = Feed.query.filter_by(id=feed_id).first()
+
+    # check feed belongs to current user.
+    if not f.user_id == session["user_id"]:
+        flash("Sorry, You don't have permission to view that feed.")
+        return redirect(url_for("feeds"))
+
+    # catch old last_loaded date (if exists)
+    last_loaded = f.last_loaded
+    if last_loaded is None:
+        last_loaded = datetime.datetime.utcnow()
+
+    # get url and pass to get_feeds
+    feed = get_feed(f.feed_url, 10, last_loaded)
+
+    # apply new last_loaded date
+    now = datetime.datetime.now()
+    f.last_loaded = now
+    db.session.commit()
+
+    # sort rss feed in chronological order
+    items = reversed(sorted(feed, key=lambda k: k['time']))
+
+    return render_template("view.html", feed_title=f.feed_name, feed=items)

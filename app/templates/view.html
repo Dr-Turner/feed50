@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {{ feed_title }} - feed50
+{% endblock %}
+
+{% block main %}
+  <div class="panel-group" id="accordion">
+    {% if feed %}
+      {% for item in feed %}
+        {%  if item.new == True %}
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a href="#collapse{{ item.n }}" data-toggle="collapse" data-parent="#accordion">{{ item.title }} (new) </a>
+              </h4>
+            </div>
+        {% else %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a href="#collapse{{ item.n }}" data-toggle="collapse" data-parent="#accordion">{{ item.title }}</a>
+              </h4>
+            </div>
+        {% endif %}
+
+
+
+      <div id="collapse{{ item.n }}" class="panel-collapse collapse">
+        <div class="panel-body">
+          <p class="item-time" style="color: #bbbbee;">Published on {{ item.time_str }}</p>
+          <hr>
+          {{ item.summary|safe }}
+          <hr>
+          <a href="{{ item.link }}" class="btn btn-default">Go To Website</a>
+        </div>
+      </div>
+      </div>
+
+
+
+      {% endfor %}
+    {% endif %}
+    </div><!-- end .panel-group-->
+
+    <a href="{{ url_for("feeds") }}" class="btn btn-default">Go back</a>
+{% endblock %}
