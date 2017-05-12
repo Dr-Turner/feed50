@@ -1,9 +1,12 @@
-# feed50
+# [feed50](www.feed50.com)
 A rss reader web app.
 
 
 Notes:
-* Password are hashed.
+* Passwords are hashed.
+* Users can completely remove all their data.
+* Hosted though Pythonanywhere for the time being and accessible through www.feed50.com
+
 
 ---  
 Created for my final [cs50x](https://www.edx.org/course/introduction-computer-science-harvardx-cs50x) project.
