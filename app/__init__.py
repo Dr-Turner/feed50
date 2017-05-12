@@ -11,7 +11,6 @@ app.config.from_object("config")
 db = SQLAlchemy(app)
 Session(app)
 
-print(db_path)
 # set up date base if it doesn't exist
 if not os.path.exists(db_path):
     print("hit")
