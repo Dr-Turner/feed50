@@ -1,6 +1,8 @@
 # [feed50](www.feed50.com)
 A rss reader web app.
 
+### YouTube 
+[![](https://img.youtube.com/vi/mc9pq7h9KAI/0.jpg)](https://www.youtube.com/watch?v=mc9pq7h9KAI)
 
 Notes:
 * Passwords are hashed.
