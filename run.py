@@ -1,4 +1,3 @@
 from app import app
 
-# app.run(debug=True)
-app.run()
+app.run(host="0.0.0.0")
