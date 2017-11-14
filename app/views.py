@@ -112,7 +112,7 @@ def logout():
 @app.route('/feeds')
 @login_required
 def feeds():
-    """page to display feed currently subsribed to"""
+    """page to display feed currently subscribed to"""
     user_feeds = Feed.query.filter_by(user_id=session["user_id"])
     return render_template('feeds.html', feeds=user_feeds)
 
@@ -189,7 +189,7 @@ def rename(feed_id=None):
 
     # Check user is the correct one.
     if not f.user_id == session["user_id"]:
-        flash("Sorry, you are not autorised to rename this feed.", "error")
+        flash("Sorry, you are not authorised to rename this feed.", "error")
         return redirect(url_for("feeds"))
 
     # store feed_id in session so it won't be lost between the get and post requests
