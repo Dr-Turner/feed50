@@ -50,7 +50,6 @@ Temporary Items
 # Project-specific ignores
 .idea
 __pycache__
-app/static/script.js
 app/db
 flask-uwsgi.log
 feed50-env/
