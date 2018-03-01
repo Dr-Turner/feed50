@@ -8,7 +8,6 @@ A rss reader web app.
 Notes:
 * Passwords are hashed.
 * Users can completely remove all their data.
-* Hosted on my Raspberry Pi 3 using nginx and wsgi configurations and accessible through www.feed50.com
 
 
 ---
